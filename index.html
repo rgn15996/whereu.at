@@ -2,19 +2,23 @@
 <html>
 <head>
 <meta charset="utf-8">
-<title>Ember Starter Kit</title>
+<title>Where U At?</title>
   <link rel="stylesheet" href="css/normalize.css">
   <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
 
   <script type="text/x-handlebars">
-    <h2>Welcome to Ember.js</h2>
+    <h2>Where U At?</h2>
 
     {{outlet}}
   </script>
 
   <script type="text/x-handlebars" data-template-name="index">
+
+    <p> Lat {{latitude}} </p>
+    <p> Lon {{longitude}} </p>
+    <p> Geo: {{geo}} </p>
     <ul>
     {{#each item in model}}
       <li>{{item}}</li>

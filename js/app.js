@@ -9,6 +9,27 @@
   App.IndexRoute = Ember.Route.extend({
     model: function() {
       return ['red', 'yellow', 'blue'];
+    },
+    setupController: function(controller, model) {
+      if (navigator.geolocation) {
+        console.log('Apparently there is geolocation');
+        return navigator.geolocation.getCurrentPosition(controller.geoLocation, controller.noGeo);
+      } else {
+        return console.log('No geolocation - bummer');
+      }
+    }
+  });
+
+  App.IndexController = Ember.ObjectController.extend({
+    geoLocation: function(location) {
+      this.set('latitude', location.coords.latitude);
+      this.set('longitude', location.coords.longitude);
+      return console.log('I think I got a position');
+    },
+    noGeo: function(positionError) {
+      console.log('noGeo: Oops!');
+      console.log(positionError.message);
+      return this.set('coords', positionError.message);
     }
   });
 
