@@ -4,7 +4,15 @@
 
   App = Ember.Application.create();
 
-  App.Router.map(function() {});
+  App.Router.map(function() {
+    return this.resource('locations');
+  });
+
+  App.LocationsRoute = Ember.Route.extend({
+    model: function() {
+      return App.Location.find();
+    }
+  });
 
   App.IndexRoute = Ember.Route.extend({
     model: function() {
@@ -13,12 +21,12 @@
   });
 
   App.IndexController = Ember.ObjectController.extend({
-    longitude: null,
-    latitude: null,
-    accuracy: null,
-    heading: null,
-    speed: null,
-    geo: null,
+    longitude: 0,
+    latitude: 0,
+    accuracy: 0,
+    heading: 0,
+    speed: 0,
+    geo: false,
     init: function() {
       if (navigator.geolocation) {
         console.log('Apparently there is geolocation');
@@ -43,5 +51,40 @@
       return this.set('status', positionError.message);
     }
   });
+
+  App.LocationsController = Ember.ArrayController.extend();
+
+  App.Store = DS.Store.extend({
+    adapter: 'DS.FixtureAdapter'
+  });
+
+  App.Location = DS.Model.extend({
+    name: DS.attr('string'),
+    lat: DS.attr('number'),
+    long: DS.attr('number'),
+    seen: DS.attr('date')
+  });
+
+  App.Location.FIXTURES = [
+    {
+      id: 1,
+      name: "Alice",
+      lat: 52.63001,
+      long: 1.3010,
+      seen: 0
+    }, {
+      id: 2,
+      name: "Bob",
+      lat: 52.59231,
+      long: 1.2810,
+      seen: 0
+    }, {
+      id: 3,
+      name: "Christine",
+      lat: 52.6339,
+      long: 1.29002,
+      seen: 0
+    }
+  ];
 
 }).call(this);
