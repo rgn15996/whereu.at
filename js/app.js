@@ -20,14 +20,15 @@
     }
   });
 
-  App.IndexController = Ember.ObjectController.extend({
+  App.ApplicationController = Ember.ObjectController.extend({
     longitude: 0,
     latitude: 0,
     accuracy: 0,
-    heading: 0,
-    speed: 0,
+    tempus: 0,
     geo: false,
+    status: "",
     init: function() {
+      this.set('tempus', moment().format());
       if (navigator.geolocation) {
         console.log('Apparently there is geolocation');
         navigator.geolocation.getCurrentPosition(this.geoLocation.bind(this), this.noGeo.bind(this));
@@ -41,8 +42,6 @@
       this.set('latitude', location.coords.latitude);
       this.set('longitude', location.coords.longitude);
       this.set('accuracy', location.coords.accuracy);
-      this.set('heading', location.coords.heading);
-      this.set('speed', location.coords.speed);
       return console.log('I think I got a position');
     },
     noGeo: function(positionError) {

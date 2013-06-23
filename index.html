@@ -10,18 +10,14 @@
 
   <script type="text/x-handlebars" data-template-name="application">
     <h2>Where U At?</h2>
-
+    <p> Lat {{latitude}} </p>
+    <p> Lon {{longitude}} </p>
+    <p> Tim {{tempus}} </p>
     {{outlet}}
   </script>
 
   <script type="text/x-handlebars" data-template-name="index">
-
-    <p> Lat {{latitude}} </p>
-    <p> Lon {{longitude}} </p>
-    <p> Acc {{accuracy}} </p>
-    <p> Hea {{heading}} </p>
-    <p> Spe {{speed}} </p>
-    <p> Geo {{geo}} </p>
+    
     <ul>
     {{#each item in model}}
       <li>{{item}}</li>

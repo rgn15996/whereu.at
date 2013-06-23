@@ -16,14 +16,15 @@ App.IndexRoute = Ember.Route.extend
 
 # Controllers
 
-App.IndexController = Ember.ObjectController.extend
+App.ApplicationController = Ember.ObjectController.extend
   longitude: 0
   latitude: 0
   accuracy: 0
-  heading: 0
-  speed: 0
+  tempus: 0
   geo: false
+  status: ""
   init: ->
+    @set('tempus', moment().format())
     if (navigator.geolocation)
       console.log 'Apparently there is geolocation'
       navigator.geolocation.getCurrentPosition(@geoLocation.bind(this), @noGeo.bind(this))
@@ -36,14 +37,17 @@ App.IndexController = Ember.ObjectController.extend
     @set('latitude', location.coords.latitude)
     @set('longitude', location.coords.longitude)
     @set 'accuracy', location.coords.accuracy
-    @set 'heading', location.coords.heading
-    @set 'speed', location.coords.speed
+    # @set 'heading', location.coords.heading
+    # @set 'speed', location.coords.speed
     console.log 'I think I got a position'
 
   noGeo: (positionError) ->
     console.log 'noGeo: Oops!'
     console.log positionError.message
-    @set('status', positionError.message)
+    @set('status', positionError.message)  
+
+# App.IndexController = Ember.ObjectController.extend
+
 
 App.LocationsController = Ember.ArrayController.extend()
   # timeNow = moment().format()
