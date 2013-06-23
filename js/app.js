@@ -51,7 +51,32 @@
     }
   });
 
-  App.LocationsController = Ember.ArrayController.extend();
+  App.LocationsController = Ember.ArrayController.extend({
+    needs: ['application'],
+    lattyBinding: Ember.Binding.oneWay("controllers.application.latitude"),
+    longyBinding: Ember.Binding.oneWay("controllers.application.longitude")
+  });
+
+  Ember.Handlebars.helper('distance', function(lat1, lon1, lat2, lon2) {
+    var R, a, c, dist, dlat, dlon;
+
+    R = 6371;
+    dlat = (lat1 - lat2).toRad();
+    dlon = (lon1 - lon2).toRad();
+    lat1 = lat1.toRad();
+    lat2 = lat2.toRad();
+    a = Math.sin(dlat / 2) * Math.sin(dlat / 2) + Math.sin(dlon / 2) * Math.sin(dlon / 2) * Math.cos(lat1) * Math.cos(lat2);
+    c = 2 * Math.atan(Math.sqrt(a), Math.sqrt(1 - a));
+    return dist = (R * c).toPrecision(3);
+  });
+
+  Ember.Handlebars.helper('displaynum', function(num) {
+    return num.toFixed(4);
+  });
+
+  Number.prototype.toRad = function() {
+    return this * Math.PI / 180;
+  };
 
   App.Store = DS.Store.extend({
     adapter: 'DS.FixtureAdapter'

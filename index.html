@@ -27,8 +27,11 @@
 
  <script type="text/x-handlebars" data-template-name="locations">
   <h2>Locations</h2>
+
+  <p> My lat is {{ displaynum latty}} </p>
+
   {{#each location in controller}}
-    <p> name: {{location.name}} {{location.lat}} </p>
+    <p> {{location.name}} {{location.lat}} {{location.long}} {{ distance latty longy location.lat location.long}}</p>
   {{/each}}
  </script>
 
