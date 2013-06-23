@@ -4,14 +4,15 @@
 <meta charset="utf-8">
 <title>Where U At?</title>
   <link rel="stylesheet" href="css/normalize.css">
+  <link rel="stylesheet" href="css/foundation.css">
   <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
 
   <script type="text/x-handlebars" data-template-name="application">
     <h2>Where U At?</h2>
-    <p> Lat {{latitude}} </p>
-    <p> Lon {{longitude}} </p>
+    <p> Lat {{displaynum latitude}} </p>
+    <p> Lon {{displaynum longitude}} </p>
     <p> Tim {{tempus}} </p>
     {{outlet}}
   </script>
@@ -28,10 +29,11 @@
  <script type="text/x-handlebars" data-template-name="locations">
   <h2>Locations</h2>
 
-  <p> My lat is {{ displaynum latty}} </p>
+  <p> My lat is {{ displaynum latty }} </p>
+  <p> My lon is {{ displaynum longy }} </p>
 
   {{#each location in controller}}
-    <p> {{location.name}} {{location.lat}} {{location.long}} {{ distance latty longy location.lat location.long}}</p>
+    <p> {{location.name}} {{location.lat}} {{location.lon}} {{ bearing latty longy location.lat location.lon}} {{ distance latty longy location.lat location.lon}}</p>
   {{/each}}
  </script>
 
@@ -40,6 +42,7 @@
   <script src="js/libs/ember-1.0.0-rc.5.js"></script>
   <script src="js/libs/ember-data-latest.js"></script>
   <script src="js/libs/moment.js"></script>
+  <script src="js/libs/foundation.js"></script>
   <script src="js/app.js"></script>
 
 </body>

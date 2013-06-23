@@ -31,14 +31,17 @@
       this.set('tempus', moment().format());
       if (navigator.geolocation) {
         console.log('Apparently there is geolocation');
-        navigator.geolocation.getCurrentPosition(this.geoLocation.bind(this), this.noGeo.bind(this));
-        return this.set('geo', true);
+        navigator.geolocation.watchPosition(this.geoLocation.bind(this), this.noGeo.bind(this));
+        this.set('geo', true);
       } else {
         console.log('No geolocation - bummer');
-        return this.set('geo', false);
+        this.set('geo', false);
       }
+      this._super();
+      return $(document).foundation();
     },
     geoLocation: function(location) {
+      console.log(location.coords.latitude);
       this.set('latitude', location.coords.latitude);
       this.set('longitude', location.coords.longitude);
       this.set('accuracy', location.coords.accuracy);
@@ -61,8 +64,8 @@
     var R, a, c, dist, dlat, dlon;
 
     R = 6371;
-    dlat = (lat1 - lat2).toRad();
-    dlon = (lon1 - lon2).toRad();
+    dlat = (lat2 - lat1).toRad();
+    dlon = (lon2 - lon1).toRad();
     lat1 = lat1.toRad();
     lat2 = lat2.toRad();
     a = Math.sin(dlat / 2) * Math.sin(dlat / 2) + Math.sin(dlon / 2) * Math.sin(dlon / 2) * Math.cos(lat1) * Math.cos(lat2);
@@ -70,12 +73,28 @@
     return dist = (R * c).toPrecision(3);
   });
 
+  Ember.Handlebars.helper('bearing', function(lat1, lon1, lat2, lon2) {
+    var brng, dlon, x, y;
+
+    dlon = (lon2 - lon1).toRad();
+    lat1 = lat1.toRad();
+    lat2 = lat2.toRad();
+    y = Math.sin(dlon) * Math.cos(lat2);
+    x = Math.cos(lat1) * Math.sin(lat2) - Math.sin(lat1) * Math.cos(lat2) * Math.cos(dlon);
+    brng = (Math.atan2(y, x).toDeg() + 360) % 360;
+    return brng = Math.round(brng);
+  });
+
   Ember.Handlebars.helper('displaynum', function(num) {
-    return num.toFixed(4);
+    return num.toFixed(5);
   });
 
   Number.prototype.toRad = function() {
     return this * Math.PI / 180;
+  };
+
+  Number.prototype.toDeg = function() {
+    return this * 180 / Math.PI;
   };
 
   App.Store = DS.Store.extend({
@@ -85,7 +104,7 @@
   App.Location = DS.Model.extend({
     name: DS.attr('string'),
     lat: DS.attr('number'),
-    long: DS.attr('number'),
+    lon: DS.attr('number'),
     seen: DS.attr('date')
   });
 
@@ -94,19 +113,19 @@
       id: 1,
       name: "Alice",
       lat: 52.63001,
-      long: 1.3010,
+      lon: 1.3010,
       seen: 0
     }, {
       id: 2,
       name: "Bob",
       lat: 52.59231,
-      long: 1.2810,
+      lon: 1.2810,
       seen: 0
     }, {
       id: 3,
       name: "Christine",
       lat: 52.6339,
-      long: 1.29002,
+      lon: 1.29002,
       seen: 0
     }
   ];

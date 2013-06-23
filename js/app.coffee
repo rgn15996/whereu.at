@@ -29,15 +29,19 @@ App.ApplicationController = Ember.ObjectController.extend
   status: ""
   init: ->
     @set('tempus', moment().format())
+
     if (navigator.geolocation)
       console.log 'Apparently there is geolocation'
-      navigator.geolocation.getCurrentPosition(@geoLocation.bind(this), @noGeo.bind(this))
+      navigator.geolocation.watchPosition(@geoLocation.bind(this), @noGeo.bind(this))
       @set('geo', true)
     else
       console.log 'No geolocation - bummer'
       @set('geo', false)
+    @_super()
+    $(document).foundation()
 
   geoLocation: (location) ->
+    console.log location.coords.latitude
     @set('latitude', location.coords.latitude)
     @set('longitude', location.coords.longitude)
     @set 'accuracy', location.coords.accuracy
@@ -62,8 +66,8 @@ App.LocationsController = Ember.ArrayController.extend(
 
 Ember.Handlebars.helper('distance', (lat1, lon1, lat2, lon2) ->
   R = 6371
-  dlat = (lat1 - lat2).toRad()
-  dlon = (lon1 - lon2).toRad()
+  dlat = (lat2 - lat1).toRad()
+  dlon = (lon2 - lon1).toRad()
   lat1 = lat1.toRad()
   lat2 = lat2.toRad()
   a = Math.sin(dlat/2) * Math.sin(dlat/2) + 
@@ -71,11 +75,25 @@ Ember.Handlebars.helper('distance', (lat1, lon1, lat2, lon2) ->
   c = 2 * Math.atan(Math.sqrt(a), Math.sqrt(1-a))
   dist = (R * c).toPrecision(3)
   )
-Ember.Handlebars.helper('displaynum', (num) ->
-  num.toFixed(4)
+Ember.Handlebars.helper('bearing', (lat1, lon1, lat2, lon2) ->
+  dlon = (lon2 - lon1).toRad()
+  lat1 = lat1.toRad()
+  lat2 = lat2.toRad()
+  y = Math.sin(dlon) * Math.cos(lat2)
+  x = Math.cos(lat1)*Math.sin(lat2) -
+      Math.sin(lat1)*Math.cos(lat2)*Math.cos(dlon)
+  brng = (Math.atan2(y,x).toDeg() + 360) % 360
+  brng = Math.round(brng)
   )
+Ember.Handlebars.helper('displaynum', (num) ->
+  num.toFixed(5)
+  )
+
 Number.prototype.toRad = ->
   this * Math.PI / 180
+
+Number.prototype.toDeg = ->
+  this * 180 / Math.PI
 
 # Models
 
@@ -85,34 +103,29 @@ App.Store = DS.Store.extend
 App.Location = DS.Model.extend
   name: DS.attr('string'),
   lat:  DS.attr('number'),
-  long: DS.attr('number'),
+  lon: DS.attr('number'),
   seen: DS.attr('date'),
-  # distance: (->
-  #   lat1 = @get('lat')
-  #   lat2 = @get('latty')
-  #   distance = lat1 - lat2
-  # ).property('lat','long')
 
 App.Location.FIXTURES = [
   {
     id:   1,
     name: "Alice",
     lat:  52.63001,
-    long: 1.3010,
+    lon: 1.3010,
     seen: 0
   },
   {
     id:   2,
     name: "Bob",
     lat:  52.59231,
-    long: 1.2810,
+    lon: 1.2810,
     seen: 0
   },
   {
     id:   3,
     name: "Christine",
     lat:  52.6339,
-    long: 1.29002,
+    lon: 1.29002,
     seen: 0
   }
 ]
